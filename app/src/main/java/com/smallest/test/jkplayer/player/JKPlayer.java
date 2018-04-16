@@ -8,7 +8,7 @@ import android.view.Surface;
 
 import java.io.IOException;
 
-public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnSeekCompleteListener {
     private String TAG = JKPlayer.class.getSimpleName();
     private Context mContext;
     private IMedia mMedia;
@@ -35,6 +35,7 @@ public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, M
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnSeekCompleteListener(this);
     }
     @Override
     public void prepareAsync() {
@@ -95,6 +96,12 @@ public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, M
             mMediaPlayer.start();
             if (mSeekPosition >= 0) {
                 Log.d(TAG, "mMediaPlayer.seekTo(), mSeekPosition=" + mSeekPosition);
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "duration=" + mMediaPlayer.getDuration());
                 mMediaPlayer.seekTo(mSeekPosition);
                 mSeekPosition = -1;
             }
@@ -173,5 +180,10 @@ public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, M
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
         mCurrentState = STATE_ERROR;
         return false;
+    }
+
+    @Override
+    public void onSeekComplete(MediaPlayer mp) {
+        Log.d(TAG, "onSeekComplete(), currentPosition=" + mp.getCurrentPosition());
     }
 }

@@ -56,14 +56,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void bindViews() {
-        mSurfaceView = findViewById(R.id.surfaceview);
+        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
         createSurface();
-        mPlayBtn = findViewById(R.id.play);
+        mPlayBtn = (Button) findViewById(R.id.play);
         mPlayBtn.setOnClickListener(this);
     }
 
     private void initPlayer() {
-        String uri = "android.resource://" + getPackageName() + "/" + R.raw.roger480;
+        String uri = "android.resource://" + getPackageName() + "/raw/roger20" ;
         Log.d(TAG, "uri=" + uri);
 
         mPlayer = new JKPlayer(getApplicationContext());
