@@ -1,12 +1,16 @@
 package com.smallest.test.jkplayer;
 
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import com.smallest.test.jkplayer.player.IMedia;
 import com.smallest.test.jkplayer.player.IMediaPlayer;
@@ -58,12 +62,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void bindViews() {
         mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
         createSurface();
+        setSpeedOptions();
         mPlayBtn = (Button) findViewById(R.id.play);
         mPlayBtn.setOnClickListener(this);
     }
 
     private void initPlayer() {
-        String uri = "android.resource://" + getPackageName() + "/raw/roger20" ;
+        String uri = "android.resource://" + getPackageName() + "/raw/jack" ;
         Log.d(TAG, "uri=" + uri);
 
         mPlayer = new JKPlayer(getApplicationContext());
@@ -97,6 +102,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mPosition = mPlayer.getCurrentPosition();
                     mPlayer.stop();
                 }
+            }
+        });
+    }
+
+    // speed values displayed in the spinner
+    private String[] getSpeedStrings() {
+        return new String[]{"0", "0.2", "0.4", "0.6", "0.8", "1.0", "1.2", "1.4", "1.6", "1.8", "2.0"};
+    }
+
+    private void setSpeedOptions() {
+        final Spinner speedOptions = (Spinner)findViewById(R.id.speedOptions);
+        String[] speeds = getSpeedStrings();
+
+        ArrayAdapter<String> arrayAdapter =  new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, speeds);
+        speedOptions.setAdapter(arrayAdapter);
+
+        // change player playback speed if a speed is selected
+        speedOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (null != mPlayer) {
+                    float selectedSpeed = Float.parseFloat(
+                            speedOptions.getItemAtPosition(i).toString());
+                    mPlayer.setSpeed(selectedSpeed);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
     }

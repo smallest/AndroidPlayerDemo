@@ -9,6 +9,7 @@ public interface IMediaPlayer {
     void setMedia(IMedia media);
     void setSurface(Surface surface);
     void setLooping(boolean looping);
+    void setSpeed(float speed);
     void prepareAsync();
     void start();
     void pause();

@@ -3,6 +3,7 @@ package com.smallest.test.jkplayer.player;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 
@@ -17,6 +18,7 @@ public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, M
     private boolean mToggleStart;
     private boolean mIsPaused = false;
     private boolean mLooping = false;
+    private float mSpeed = 1;
 
     private int STATE_IDLE = -1;
     private int STATE_INITIALIZED = 0;
@@ -147,6 +149,23 @@ public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, M
     public void setLooping(boolean looping) {
         Log.d(TAG, "setLooping(), looping=" + looping);
         mLooping = looping;
+    }
+
+    @Override
+    public void setSpeed(float speed) {
+        Log.d(TAG, "setSpeed(), speed=" + speed);
+        // this checks on API 23 and up
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
+            } else {
+                mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
+//                mMediaPlayer.pause();
+            }
+            mSpeed = speed;
+        } else {
+            Log.w(TAG, "setSpeed not supported!");
+        }
     }
 
     @Override
