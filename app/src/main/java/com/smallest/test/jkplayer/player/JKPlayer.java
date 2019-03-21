@@ -9,7 +9,14 @@ import android.view.Surface;
 
 import java.io.IOException;
 
-public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnSeekCompleteListener {
+public class JKPlayer implements IMediaPlayer,
+        MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnErrorListener,
+        MediaPlayer.OnSeekCompleteListener,
+        MediaPlayer.OnInfoListener,
+        MediaPlayer.OnCompletionListener,
+        MediaPlayer.OnBufferingUpdateListener,
+        MediaPlayer.OnVideoSizeChangedListener {
     private String TAG = JKPlayer.class.getSimpleName();
     private Context mContext;
     private IMedia mMedia;
@@ -38,6 +45,9 @@ public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, M
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnSeekCompleteListener(this);
+        mMediaPlayer.setOnInfoListener(this);
+        mMediaPlayer.setOnBufferingUpdateListener(this);
+        mMediaPlayer.setOnVideoSizeChangedListener(this);
     }
     @Override
     public void prepareAsync() {
@@ -169,6 +179,25 @@ public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, M
     }
 
     @Override
+    public void setScreenOnWhilePlaying(boolean screenOn) {
+        mMediaPlayer.setScreenOnWhilePlaying(screenOn);
+    }
+
+    @Override
+    public void setAudioStreamType(int streamtype) {
+        if (mCurrentState != STATE_ERROR) {
+            mMediaPlayer.setAudioStreamType(streamtype);
+        }
+    }
+
+    @Override
+    public void setVolume(float leftVolume, float rightVolume) {
+        if (mCurrentState != STATE_ERROR) {
+            mMediaPlayer.setVolume(leftVolume, rightVolume);
+        }
+    }
+
+    @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         Log.d(TAG, "onPrepared(), mToggleStart=" + mToggleStart);
         mCurrentState = STATE_PREPARED;
@@ -196,6 +225,30 @@ public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, M
     }
 
     @Override
+    public int getDuration() {
+        if (mCurrentState != STATE_ERROR) {
+            return mMediaPlayer.getDuration();
+        }
+        return -1;
+    }
+
+    @Override
+    public int getVideoWidth() {
+        if (mCurrentState != STATE_ERROR) {
+            return mMediaPlayer.getVideoWidth();
+        }
+        return -1;
+    }
+
+    @Override
+    public int getVideoHeight() {
+        if (mCurrentState != STATE_ERROR) {
+            return mMediaPlayer.getVideoHeight();
+        }
+        return -1;
+    }
+
+    @Override
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
         mCurrentState = STATE_ERROR;
         return false;
@@ -204,5 +257,26 @@ public class JKPlayer implements IMediaPlayer, MediaPlayer.OnPreparedListener, M
     @Override
     public void onSeekComplete(MediaPlayer mp) {
         Log.d(TAG, "onSeekComplete(), currentPosition=" + mp.getCurrentPosition());
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mediaPlayer, int percent) {
+        Log.d(TAG, "onBufferingUpdate(), percent=" + percent);
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        Log.d(TAG, "onCompletion()");
+    }
+
+    @Override
+    public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
+        Log.d(TAG, "onInfo(), what=" + what + ", extra=" + extra);
+        return false;
+    }
+
+    @Override
+    public void onVideoSizeChanged(MediaPlayer mediaPlayer, int width, int height) {
+        Log.d(TAG, "onVideoSizeChanged(), width=" + width + ", height=" + height);
     }
 }

@@ -10,6 +10,9 @@ public interface IMediaPlayer {
     void setSurface(Surface surface);
     void setLooping(boolean looping);
     void setSpeed(float speed);
+    void setScreenOnWhilePlaying(boolean screenOn);
+    void setAudioStreamType(int streamtype);
+    void setVolume(float leftVolume, float rightVolume);
     void prepareAsync();
     void start();
     void pause();
@@ -19,4 +22,8 @@ public interface IMediaPlayer {
     boolean isPlaying();
     boolean isPaused();
     int getCurrentPosition();
+    int getDuration();
+    int getVideoWidth();
+    int getVideoHeight();
+
 }

@@ -1,6 +1,10 @@
 package com.smallest.test.jkplayer;
 
+import android.media.AudioManager;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,11 +23,32 @@ import com.smallest.test.jkplayer.player.Media;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private String TAG = MainActivity.class.getSimpleName();
+    private final static int MSG_PROGRESS = 10001;
+    private final static long DELAY_GET_PROGRESS = 1000;
     private SurfaceView mSurfaceView;
     private IMediaPlayer mPlayer;
     private IMedia mMedia;
     private Button mPlayBtn;
     private int mPosition = -1;
+    private Handler mHandler;
+
+    private class MyHandler extends Handler {
+        MyHandler(Looper looper) {
+            super(looper);
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_PROGRESS:
+                    if (null != mPlayer){
+                        Log.d(TAG, "current position:" + mPlayer.getCurrentPosition());
+                        Log.d(TAG, "duration:" + mPlayer.getDuration());
+                        Log.d(TAG, "width:" + mPlayer.getVideoWidth() + ",height=" + mPlayer.getVideoHeight());
+                    }
+                    mHandler.sendEmptyMessageDelayed(MSG_PROGRESS, DELAY_GET_PROGRESS);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         bindViews();
         initPlayer();
+        mHandler = new MyHandler(getMainLooper());
     }
 
     @Override
@@ -38,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onPause();
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.pause();
+            mHandler.removeMessages(MSG_PROGRESS);
             mPlayBtn.setText(getResources().getString(R.string.play));
         }
     }
@@ -47,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         if (mPlayer != null && mPlayer.isPaused()) {
             mPlayer.start();
+            mHandler.sendEmptyMessage(MSG_PROGRESS);
             mPlayBtn.setText(getResources().getString(R.string.playing));
         }
     }
@@ -73,8 +101,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mPlayer = new JKPlayer(getApplicationContext());
         mPlayer.setLooping(true);
+        mPlayer.setScreenOnWhilePlaying(true);
         mMedia = new Media(uri);
         mPlayer.setMedia(mMedia);
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mPlayer.setVolume(0.3f, 0.8f);
     }
 
     private void createSurface() {
@@ -87,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mPlayer.setSurface(surfaceHolder.getSurface());
                     mPlayer.prepareAsync();
                     mPlayer.start();
+                    mHandler.sendEmptyMessage(MSG_PROGRESS);
                 }
             }
 
@@ -145,13 +177,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d(TAG, "mPlayer.isPaused()=" + mPlayer.isPaused() + ", mPlayer.isPlaying()=" + mPlayer.isPlaying());
                     if (mPlayer.isPaused()) {
                         mPlayer.start();
+                        mHandler.sendEmptyMessage(MSG_PROGRESS);
                         mPlayBtn.setText(getResources().getString(R.string.playing));
                     } else if (mPlayer.isPlaying()) {
                         mPlayer.pause();
+                        mHandler.removeMessages(MSG_PROGRESS);
                         mPlayBtn.setText(getResources().getString(R.string.play));
                     } else {
                         mPlayer.prepareAsync();
                         mPlayer.start();
+                        mHandler.sendEmptyMessage(MSG_PROGRESS);
                         mPlayBtn.setText(getResources().getString(R.string.playing));
                     }
                 }
