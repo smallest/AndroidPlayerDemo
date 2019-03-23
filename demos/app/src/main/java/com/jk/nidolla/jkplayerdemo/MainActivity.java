@@ -179,4 +179,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+    void testMediaCodecCapability() {
+        int n = MediaCodecList.getCodecCount();
+        for (int i = 0; i < n; ++i) {
+            MediaCodecInfo info = MediaCodecList.getCodecInfoAt(i);
+            String[] supportedTypes = info.getSupportedTypes();
+            for (int j = 0; j < supportedTypes.length; ++j) {
+                Log.d(TAG, "codec info:" + info.getName() + ", supportedTypes:" + supportedTypes[j]);
+            }
+        }
+    }
 }

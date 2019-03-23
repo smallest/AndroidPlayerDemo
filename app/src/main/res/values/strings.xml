@@ -2,4 +2,6 @@
     <string name="app_name">JKPlayer</string>
     <string name="play">|></string>
     <string name="playing">||</string>
+    <string name="jkplayer">jkplayer</string>
+    <string name="jkcodec">jkcodec</string>
 </resources>
