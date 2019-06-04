@@ -91,6 +91,8 @@ public class AACToPCM {
 
         MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
         int outputIndex = codec.dequeueOutputBuffer(bufferInfo, TIMEOUT_USEC);
+        Log.d(TAG, "index=" + outputIndex + ", offset=" + bufferInfo.offset + ", size=" + bufferInfo.size
+                + ",pts=" + bufferInfo.presentationTimeUs + ",flags=" + bufferInfo.flags);
         if (outputIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {//TIMEOUT
             Log.d(TAG, "INFO_TRY_AGAIN_LATER");//TODO how to declare this info
             return OK;

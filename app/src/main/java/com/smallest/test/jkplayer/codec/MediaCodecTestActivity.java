@@ -33,6 +33,7 @@ public class MediaCodecTestActivity extends AppCompatActivity implements View.On
         requestPermission();
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
