@@ -136,6 +136,12 @@ public class AACToPCM {
             return ERROR_OPEN_CODEC;
         }
         mDecoder.configure(format, null, null, 0);
+        MediaFormat outputFormat = mDecoder.getOutputFormat();
+
+        Log.d(TAG, "outputFormat, mimeType=" + outputFormat.getString(MediaFormat.KEY_MIME)
+         + ", channelCount=" + outputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+         + ", channelMask=" + outputFormat.getInteger(MediaFormat.KEY_CHANNEL_MASK));
+
         mDecoder.start();
         if (Build.VERSION.SDK_INT < 21) {
             mInputBuffers = mDecoder.getInputBuffers();

@@ -1,6 +1,7 @@
 package com.smallest.test.jkplayer.codec;
 
 import android.Manifest;
+import android.media.MediaCodecList;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +20,8 @@ import io.reactivex.functions.Consumer;
 public class MediaCodecTestActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MediaCodecTestActivity";
     private boolean mHasWriteStoragePermission = false;
-    private Button mBtn;
+    private Button mAudioChangeBtn;
+    private Button mDisplayCodecBtn;
     private String mAACPath = FileUtils.getBaseFolder(MediaCodecTestActivity.this) + "demo1.aac";
     private String mPCMPath = FileUtils.getBaseFolder(MediaCodecTestActivity.this) + "demo1.pcm";
     private boolean mAACToPCMRunning = false;
@@ -28,8 +30,10 @@ public class MediaCodecTestActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mediacodectest);
-        mBtn = (Button)findViewById(R.id.audio_change);
-        mBtn.setOnClickListener(this);
+        mAudioChangeBtn = (Button)findViewById(R.id.audio_change);
+        mAudioChangeBtn.setOnClickListener(this);
+        mDisplayCodecBtn = (Button)findViewById(R.id.display_codec);
+        mDisplayCodecBtn.setOnClickListener(this);
         requestPermission();
     }
 
@@ -50,10 +54,14 @@ public class MediaCodecTestActivity extends AppCompatActivity implements View.On
                     Log.d(TAG, "task AACToPCM is running");
                 }
                 break;
+            case R.id.display_codec:
+                MediaCodecUtils.displayDecoders();
+                break;
             default:
                 break;
         }
     }
+
 
     private void requestPermission(){
         RxPermissions rxPermissions = new RxPermissions(this);

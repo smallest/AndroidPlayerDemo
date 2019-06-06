@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".codec.MediaCodecTestActivity">
+    tools:context=".codec.MediaCodecTestActivity"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/audio_change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="音频转换"/>
 
-</android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/display_codec"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="编解码器信息"/>
+</LinearLayout>
